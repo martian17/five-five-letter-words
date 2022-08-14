@@ -61,7 +61,7 @@ for(let c of alphLetters){
 
 
 let search = function(forbidden,n){
-    if(n === 0)console.log("yay");
+    if(n === 0)console.log("yay fond a result!");
     if(n === 0)return [[]];
     //try to determine the smallest subset
     let min = Infinity;
@@ -101,8 +101,14 @@ let search = function(forbidden,n){
     return results;
 };
 console.log("searching");
-let Result = search(nullobj(),5);
-console.log(Result.length);
+let Results = search(nullobj(),5);
+console.log(`result length: ${Results.length}`);
+
+console.log("here comes the result");
+console.log(Results.map(result=>{
+    return result.map(w=>permmap[w]);
+}));
+
 /*
 let searchWordList = function(forbiddens,n){
     for(let c of alphLetters){
