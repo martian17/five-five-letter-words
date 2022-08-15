@@ -4,14 +4,6 @@ let nullobj = function(){
     return Object.create(null);
 };
 
-let newarr = function(n){
-    let arr = [];
-    for(let i = 0; i < n; i++){
-        arr.push(0);
-    }
-    return arr;
-};
-
 let createCharSet = function(str){
     let obj = nullobj();
     for(let c of str){
@@ -19,16 +11,6 @@ let createCharSet = function(str){
     }
     return obj;
 }
-
-let alphLetters = newarr(26).map((_,i)=>String.fromCharCode(i+97));
-
-let createLetterMap = function(){
-    let res = nullobj();
-    for(let i = 0; i < alphLetters.length; i++){
-        res[alphLetters[i]] = {};
-    }
-    return res;
-};
 
 
 let hasNoDuplicates = function(str){
@@ -53,36 +35,6 @@ for(let w of fives_original){
 }
 
 let fives = Object.keys(permmap);
-
-let containChar = createLetterMap();
-for(let w of fives){
-    for(let c of w){
-        containChar[c][w] = true;
-    }
-}
-let containCharSizes = nullobj();
-for(let c of alphLetters){
-    containCharSizes[c] = Object.keys(containChar[c]).length;
-}
-
-let allSet = nullobj();
-for(let w of fives){
-    allSet[w] = true;
-}
-
-
-let notContainChar = createLetterMap();
-for(let w of fives){
-    let cs = createCharSet(w);
-    for(let c of alphLetters){
-        if(c in cs)continue;
-        notContainChar[c][w] = true;
-    }
-}
-let notContainCharSizes = nullobj();
-for(let c of alphLetters){
-    notContainCharSizes[c] = Object.keys(notContainChar[c]).length;
-}
 
 //main code
 
@@ -131,9 +83,11 @@ console.log(Results.map(result=>{
     return result.map(w=>permmap[w]);
 }));
 
+
+//saving the result to file
 //                        map reserve, preserves the original
 console.log("saving results to files");
-let rr = Results.map(r=>r.map(v=>v).reverse().map(wp=>{
+let readable = Results.map(r=>r.map(v=>v).reverse().map(wp=>{
     let ws=permmap[wp];
     if(ws.length===1){
         return ws[0];
@@ -141,7 +95,7 @@ let rr = Results.map(r=>r.map(v=>v).reverse().map(wp=>{
         return `[${ws.join(", ")}]`;
     }
 }).join(", ")).join("\n");
-fs.writeFileSync("result_readable.txt",rr,"utf-8");
+fs.writeFileSync("result_readable.txt",readable,"utf-8");
 
 let json = JSON.stringify(Results.map(r=>r.map(wp=>permmap[wp])));
 fs.writeFileSync("result.json",json,"utf-8");
@@ -149,26 +103,3 @@ fs.writeFileSync("result.json",json,"utf-8");
 let json0 = JSON.stringify(Results);
 fs.writeFileSync("result_compact.json",json0,"utf-8");
 console.log("saved results to files");
-
-/*
-let searchWordList = function(forbiddens,n){
-    for(let c of alphLetters){
-        if(c in forbiddens)continue;
-
-    }
-};
-
-console.log("calculating");
-let results = searchWordList(nullobj());
-
-
-for(let i = 0; i < fives.length; i++){
-    let forbiddens = nullobj();
-    for(let i = 0; i < 5; i++){
-
-    }
-    let word = fives[i];
-
-}*/
-
-
