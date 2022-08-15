@@ -12,6 +12,14 @@ let newarr = function(n){
     return arr;
 };
 
+let createCharSet = function(str){
+    let obj = nullobj();
+    for(let c of str){
+        obj[c] = true;
+    }
+    return obj;
+}
+
 let alphLetters = newarr(26).map((_,i)=>String.fromCharCode(i+97));
 
 let createLetterMap = function(){
@@ -46,62 +54,76 @@ for(let w of fives_original){
 
 let fives = Object.keys(permmap);
 
-let charmap = createLetterMap();
+let containChar = createLetterMap();
 for(let w of fives){
     for(let c of w){
-        charmap[c][w] = true;
+        containChar[c][w] = true;
     }
 }
-let charmapSizes = nullobj();
+let containCharSizes = nullobj();
 for(let c of alphLetters){
-    charmapSizes[c] = Object.keys(charmap[c]).length;
+    containCharSizes[c] = Object.keys(containChar[c]).length;
+}
+
+let allSet = nullobj();
+for(let w of fives){
+    allSet[w] = true;
+}
+
+
+let notContainChar = createLetterMap();
+for(let w of fives){
+    let cs = createCharSet(w);
+    for(let c of alphLetters){
+        if(c in cs)continue;
+        notContainChar[c][w] = true;
+    }
+}
+let notContainCharSizes = nullobj();
+for(let c of alphLetters){
+    notContainCharSizes[c] = Object.keys(notContainChar[c]).length;
 }
 
 //main code
 
+//'afikz', 'afikw'
+let search = function(currentSet,n){
+    if(n === 1 && currentSet.length > 0)console.log("yay fond a result!",currentSet.map(w=>permmap[w]));
+    if(n === 1)return currentSet.map(w=>[w]);
+    if(n === 5)console.log("5: ",currentSet.length);
+    if(n === 4)console.log("4: ",currentSet.length);
 
-let search = function(forbidden,n){
-    if(n === 0)console.log("yay fond a result!");
-    if(n === 0)return [[]];
-    //try to determine the smallest subset
-    let min = Infinity;
-    let minc = null;
-    for(let c of alphLetters){
-        if(c in forbidden)continue;
-        if(charmapSizes[c] < min){
-            min = charmapSizes[c];
-            minc = c;
-        }
-    }
-    if(n === 5)console.log(minc);
-    if(minc === null)return [];//forbidden full
     let results = [];
-    for(let w in charmap[minc]){
-        let good = true;//word is good
-        for(let c of w){
-            if(c in forbidden){
-                good = false;
-                break;
+
+    for(let i = 0; i < currentSet.length-1; i++){
+        let w1 = currentSet[i];
+        let newSet = [];
+        let forbidden = createCharSet(w1);
+        for(let j = i+1; j < currentSet.length; j++){
+            let w2 = currentSet[j];
+            let good = true;
+            for(let c of w2){
+                if(c in forbidden){
+                    good = false;
+                    break;
+                }
             }
+            if(!good)continue;
+            newSet.push(w2);
+            //console.log(w2);
         }
-        //console.log(w);
-        if(good){
-            let forbidden1 = Object.create(forbidden);
-            for(let c of w){
-                //console.log(c);
-                forbidden1[c] = true;
-            }
-            let res = search(forbidden1,n-1);
-            for(let set of res){
-                set.push(w);
-                results.push(set);
-            }
+        //console.log(newSet.length);
+        //break;
+        let r = search(newSet,n-1);
+        for(let set of r){
+            set.push(w1);
+            results.push(set);
         }
     }
     return results;
 };
 console.log("searching");
-let Results = search(nullobj(),5);
+let Results = search(fives,5);
 console.log(`result length: ${Results.length}`);
 
 console.log("here comes the result");
