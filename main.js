@@ -90,12 +90,11 @@ for(let c of alphLetters){
 let search = function(currentSet,n){
     if(n === 1 && currentSet.length > 0)console.log("yay fond a result!",currentSet.map(w=>permmap[w]));
     if(n === 1)return currentSet.map(w=>[w]);
-    if(n === 5)console.log("5: ",currentSet.length);
-    if(n === 4)console.log("4: ",currentSet.length);
 
     let results = [];
-
+    let cnt = 0;
     for(let i = 0; i < currentSet.length-1; i++){
+        cnt++;
         let w1 = currentSet[i];
         let newSet = [];
         let forbidden = createCharSet(w1);
@@ -119,6 +118,7 @@ let search = function(currentSet,n){
             set.push(w1);
             results.push(set);
         }
+        if(n === 5)console.log(`${Math.round(cnt/fives.length*1000)/10}% complete, sorted word: ${w1}, searched subset: ${newSet.length}`);
     }
     return results;
 };
