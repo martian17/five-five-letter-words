@@ -88,7 +88,7 @@ for(let c of alphLetters){
 
 //'afikz', 'afikw'
 let search = function(currentSet,n){
-    if(n === 1 && currentSet.length > 0)console.log("yay fond a result!",currentSet.map(w=>permmap[w]));
+    if(n === 1 && currentSet.length > 0)console.log("yay fond a result! last members:",currentSet.map(w=>permmap[w]));
     if(n === 1)return currentSet.map(w=>[w]);
 
     let results = [];
@@ -130,6 +130,25 @@ console.log("here comes the result");
 console.log(Results.map(result=>{
     return result.map(w=>permmap[w]);
 }));
+
+//                        map reserve, preserves the original
+console.log("saving results to files");
+let rr = Results.map(r=>r.map(v=>v).reverse().map(wp=>{
+    let ws=permmap[wp];
+    if(ws.length===1){
+        return ws[0];
+    }else{
+        return `[${ws.join(", ")}]`;
+    }
+}).join(", ")).join("\n");
+fs.writeFileSync("result_readable.txt",rr,"utf-8");
+
+let json = JSON.stringify(Results.map(r=>r.map(wp=>permmap[wp])));
+fs.writeFileSync("result.json",json,"utf-8");
+
+let json0 = JSON.stringify(Results);
+fs.writeFileSync("result_compact.json",json0,"utf-8");
+console.log("saved results to files");
 
 /*
 let searchWordList = function(forbiddens,n){
